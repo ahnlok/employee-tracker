@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
     host: "localhost",
     port: "3306",
     user: "root",
-    password: "",
+    password: "Ahn@lok123",
     database: "employeeDB"
 });
 
@@ -58,7 +58,7 @@ function createEmployee() {
             name: "role",
         },
     ]).then((answer) => {
-        connection.querry(
+        connection.query(
             "Insert into Employee List ?",
             {
                 first_name: answer.firstName,
