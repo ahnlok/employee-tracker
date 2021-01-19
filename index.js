@@ -1,11 +1,12 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const consoleTable = require("console.table");
 
 const connection = mysql.createConnection({
     host: "localhost",
     port: "3306",
     user: "root",
-    password: "Ahn@lok123",
+    password: "password",
     database: "employeeDB"
 });
 
@@ -14,63 +15,85 @@ connection.connect((err) => {
     console.log("Connected!");
     start();
 });
-// Function to start
+
+// Function to bring out start prompts
 function start() {
     inquirer.prompt([
         {
             type: "list",
-            choices: ["Engineering", "Finance", "Legal", "Marketing", "Sales", "Exit"],
-            message: "What department is the employee in?",
-            name: "department",
+            message: "What would you like to do?",
+            name: "choice",
+            choices: [
+                "View all employees",
+                "View all employees by 'Role'",
+                "View all employees by 'Department'",
+                "Add employee",
+                "Add role",
+                "Add department"
+                ],
         },
-    ]).then((answer) => {
-        if (answer.department === "Engineering") {
-            createEmployee();
-        } else if (answer.department === "Finance") {
-            createEmployee();
-        } else if (answer.department === "Legal") {
-            createEmployee();
-        } else if (answer.department === "Marketing") {
-            createEmployee();
-        } else if (answer.department === "Sales") {
-            createEmployee();
-        } else {
-            connection.end();
-        }
-    });
-}
-// Create employee to the list function
-function createEmployee() {
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is the employee's first name?",
-            name: "firstName"
-        },
-        {
-            type: "input",
-            message: "What is the employee's last name?",
-            name: "lastName",
-        },
-        {
-            type: "input",
-            message: "What role is the employee?",
-            name: "role",
-        },
-    ]).then((answer) => {
-        connection.query(
-            "Insert into Employee List ?",
-            {
-                first_name: answer.firstName,
-                last_name: answer.lastName,
-                employee_role: answer.role
+    ]).then(function(data) {
+        switch (data.choice) {
+            case "View all employees":
+                viewEmployee();
+            break;
 
-            },
-        (err) => {
-            if (err) throw err;
-            console.log("Successfully register employee information!");
-            start();
-            }
-        );
-    });
+            case "View all employees by 'Role'":
+                viewRole();
+            break;
+
+            case "View all employees by 'Department'":
+                viewDepartment();
+            break;
+
+            case "Add employee":
+                addEmployee();
+            break;
+
+            case "Add role":
+                addRole();
+            break;
+
+            case "Add department":
+                addDepartment();
+            break;
+        }
+
+    })
+}
+
+// Viewing all employees
+function viewEmployee() {
+    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) As Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role department_id left join employee e on employee.manager_id= e.id;", 
+    function(err, res) {
+        if (err) throw err
+        console.table(res)
+        start();
+    })
+}
+
+// Viewing all roles
+function viewRole() {
+    connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;", 
+    function(err, res) {
+        if (err) throw err
+        console.table(res)
+        start();
+    })
+}
+
+// View all departments
+function viewDepartment() {
+    connection.query("SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id;",
+    function(err, res) {
+        if (err) throw err
+        console.table(res)
+        start();
+    })
+}
+
+// Role title for adding employee prompt
+const roleArray = [];
+function selectRole() {
+    connection.query("SELECT * FROM role", function(err, res) {}
 }
