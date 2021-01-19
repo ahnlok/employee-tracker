@@ -12,15 +12,10 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
     if (err) throw err;
     console.log("Connected!");
-
+    start();
 });
 // Function to start
 function start() {
-    inquirer.prompt({
-        
-    })
-}
-function init() {
     inquirer.prompt([
         {
             type: "list",
@@ -28,6 +23,25 @@ function init() {
             message: "What department is the employee in?",
             name: "department",
         },
+    ]).then((answer) => {
+        if (answer.department === "Engineering") {
+            createEmployee();
+        } else if (answer.department === "Finance") {
+            createEmployee();
+        } else if (answer.department === "Legal") {
+            createEmployee();
+        } else if (answer.department === "Marketing") {
+            createEmployee();
+        } else if (answer.department === "Sales") {
+            createEmployee();
+        } else {
+            connection.end();
+        }
+    });
+}
+// Create employee to the list function
+function createEmployee() {
+    inquirer.prompt([
         {
             type: "input",
             message: "What role is the employee?",
@@ -43,7 +57,7 @@ function init() {
             message: "What is the employee's last name?",
             name: "lastName",
         },
-    ]).then(({ department, role, firstName, lastName }) => {
+    ]).then(({ role, firstName, lastName }) => {
         if (department === "Engineering") {
             createEmployee(role, firstName, lastName);
         } else if (choice === "Finance") {
@@ -60,5 +74,3 @@ function init() {
     });
 }
 
-// function to create employee list added
-function createEmployee()
