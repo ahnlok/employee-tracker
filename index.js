@@ -44,11 +44,6 @@ function createEmployee() {
     inquirer.prompt([
         {
             type: "input",
-            message: "What role is the employee?",
-            name: "role",
-        },
-        {
-            type: "input",
             message: "What is the employee's first name?",
             name: "firstName"
         },
@@ -57,20 +52,25 @@ function createEmployee() {
             message: "What is the employee's last name?",
             name: "lastName",
         },
-    ]).then(({ role, firstName, lastName }) => {
-        if (department === "Engineering") {
-            createEmployee(role, firstName, lastName);
-        } else if (choice === "Finance") {
-            createEmployee(role, firstName, lastName);
-        } else if (choice === "Legal") {
-            createEmployee(role, firstName, lastName);
-        } else if (choice === "Marketing") {
-            createEmployee(role, firstName, lastName);
-        } else if (choice === "Sales") {
-            createEmployee(role, firstName, lastName);
-        } else {
-            connection.end();
-        }
+        {
+            type: "input",
+            message: "What role is the employee?",
+            name: "role",
+        },
+    ]).then((answer) => {
+        connection.querry(
+            "Insert into Employee List ?",
+            {
+                first_name: answer.firstName,
+                last_name: answer.lastName,
+                employee_role: answer.role
+
+            },
+        (err) => {
+            if (err) throw err;
+            console.log("Successfully register employee information!");
+            start();
+            }
+        );
     });
 }
-
