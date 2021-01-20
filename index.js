@@ -165,3 +165,97 @@ function addEmployee() {
 }
 
 // Updating employee information
+function updateEmployee() {
+    connection.query("SELECT employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id", function(err, res) {
+        if (err) throw err
+        console.log(res)
+        inquirer.prompt([
+            {
+                name: "lastname",
+                type: "rawlist",
+                choices: 
+                function() {
+                    let lastname = [];
+                    for (let i = 0; i < res.length; i++) {
+                        lastname.push(res[i].last_name);
+                    }
+                    return lastname;
+                },
+                message: "What is the last name of the employee?",
+            },
+            {
+                name: "role",
+                type: "rawlist",
+                message: "What is the new title for the employee?",
+                choices: selectRole()
+            },
+        ]).then(function(val) {
+            let roleId = selectRole().indexOf(val.role) + 1
+            connection.query("UPDATE employee SET WHERE ?",
+            {
+                last_name: val.lastname
+            },
+            {
+                role_id: roleId
+            },
+            function(err){
+                if (err) throw error 
+                console.table(val)
+                start()
+            })
+        })
+    })
+}
+
+// Adding Employee's Role
+function addRole() {
+    connection.query("SELECT role.title AS Title, role.salary AS Salary FROM role", function(err, res) {
+        inquirer.prompt([]
+        {
+            name: "Title",
+            type: "input",
+            message: "What is the title of the role?"
+        },
+        {
+            name: "Salary",
+            type: "input",
+            message: "What is the salary?"
+        }
+    }).then((res) => {
+        connection.query(
+            "INSERT INTO role SET ?",
+            {
+                title: res.Title,
+                salary: res.Salary,
+            },
+            function(err) {
+                if (err) throw error 
+                console.table(res);
+                start()
+            }
+        )
+    })
+}
+
+// Add department
+function addDepartment() {
+    inquirer.prompt ([
+        {
+        name: "name",
+        type: "input",
+        message: "What department would you like to add?"
+        }
+    ]).then((res) => {
+        let query = connection.query(
+            "INSERT INTO department SET ?",
+            {
+                name: res.name
+            },
+            function(err) {
+                if (err) throw error 
+                console.table(res);
+                start()
+            }
+        )
+    })
+}
