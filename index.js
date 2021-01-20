@@ -28,6 +28,7 @@ function start() {
                 "View all employees by 'Role'",
                 "View all employees by 'Department'",
                 "Add employee",
+                "Update employee",
                 "Add role",
                 "Add department"
                 ],
@@ -48,6 +49,10 @@ function start() {
 
             case "Add employee":
                 addEmployee();
+            break;
+
+            case "Update employee":
+                updateEmployee();
             break;
 
             case "Add role":
@@ -93,7 +98,70 @@ function viewDepartment() {
 }
 
 // Role title for adding employee prompt
-const roleArray = [];
+let roleArray = [];
 function selectRole() {
-    connection.query("SELECT * FROM role", function(err, res) {}
+    connection.query("SELECT * FROM role", function(err, res) {
+        if (err) throw err
+        for(let i = 0; i < res.length; i++) {
+            roleArray.push(res[i].title);
+        }
+    })
+    return roleArray;
 }
+
+// Manager for adding employee prompt
+let managerArray = [];
+function selectManager() {
+    connection.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",  function(err, res) {
+        if (err) throw err
+        for(let i = 0; i < res.length; i++) {
+            managerArray.push(res[i].first_name);
+        }
+    })
+    return managerArray;
+}
+
+// Adding Employee information
+function addEmployee() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "Enter employee's 'First Name'",
+        },
+        {
+            type: "input",
+            name: "lastName",
+            message: "Enter employee's 'Last Name'",
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Choose the employee's 'Role'",
+            choices: selectRole()
+        },
+        {
+            type: "rawlist",
+            name: "manager",
+            message: "Choose the employee's 'Manager Name'",
+            choices: selectManager()
+        },
+    ]).then((val) => {
+        let roleId = selectRole().indexOf(val.role) + 1
+        let managerId = selectManager().indexOf(val.manger) + 1
+        connection.query("INSERT INTO employee SET ?", 
+        {
+            first_name: val.firstName,
+            last_name: val.lastName,
+            manager_id: managerId,
+            role_id: roleId
+        }, function(err) {
+            if (err) throw error
+            console.table(val)
+            start();
+        })
+
+    })
+}
+
+// Updating employee information
