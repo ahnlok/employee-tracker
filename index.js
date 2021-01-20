@@ -1,12 +1,12 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
+
 
 const connection = mysql.createConnection({
     host: "localhost",
     port: "3306",
     user: "root",
-    password: "password",
+    password: "Ahn@lok123",
     database: "employeeDB"
 });
 
@@ -69,7 +69,7 @@ function start() {
 
 // Viewing all employees
 function viewEmployee() {
-    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) As Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role department_id left join employee e on employee.manager_id= e.id;", 
+    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;",
     function(err, res) {
         if (err) throw err
         console.table(res)
@@ -79,7 +79,7 @@ function viewEmployee() {
 
 // Viewing all roles
 function viewRole() {
-    connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;", 
+    connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
     function(err, res) {
         if (err) throw err
         console.table(res)
@@ -89,7 +89,7 @@ function viewRole() {
 
 // View all departments
 function viewDepartment() {
-    connection.query("SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id;",
+    connection.query("SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id;", 
     function(err, res) {
         if (err) throw err
         console.table(res)
@@ -98,7 +98,7 @@ function viewDepartment() {
 }
 
 // Role title for adding employee prompt
-let roleArray = [];
+var roleArray = [];
 function selectRole() {
     connection.query("SELECT * FROM role", function(err, res) {
         if (err) throw err
@@ -147,8 +147,8 @@ function addEmployee() {
             choices: selectManager()
         },
     ]).then((val) => {
-        let roleId = selectRole().indexOf(val.role) + 1
-        let managerId = selectManager().indexOf(val.manger) + 1
+        var roleId = selectRole().indexOf(val.role) + 1
+        var managerId = selectManager().indexOf(val.manger) + 1
         connection.query("INSERT INTO employee SET ?", 
         {
             first_name: val.firstName,
@@ -210,7 +210,7 @@ function updateEmployee() {
 // Adding Employee's Role
 function addRole() {
     connection.query("SELECT role.title AS Title, role.salary AS Salary FROM role", function(err, res) {
-        inquirer.prompt([]
+        inquirer.prompt([
         {
             name: "Title",
             type: "input",
@@ -221,7 +221,7 @@ function addRole() {
             type: "input",
             message: "What is the salary?"
         }
-    }).then((res) => {
+        ]).then((res) => {
         connection.query(
             "INSERT INTO role SET ?",
             {
@@ -234,6 +234,7 @@ function addRole() {
                 start()
             }
         )
+        })
     })
 }
 
@@ -244,17 +245,17 @@ function addDepartment() {
         name: "name",
         type: "input",
         message: "What department would you like to add?"
-        }
+        },
     ]).then((res) => {
-        let query = connection.query(
-            "INSERT INTO department SET ?",
+        var query = connection.query(
+            "INSERT INTO department SET ? ",
             {
                 name: res.name
             },
             function(err) {
                 if (err) throw error 
                 console.table(res);
-                start()
+                start();
             }
         )
     })

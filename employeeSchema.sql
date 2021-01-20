@@ -47,7 +47,7 @@ VALUE ("Senior Marketing Manager", 110000, 2);
 INSERT INTO role (title, salary, department_id)
 VALUE ("Data Analyst", 90000, 66);
 INSERT INTO role (title, salary, department_id)
-VALUE ("Lead Software Engineer, 130000, 33);
+VALUE ("Lead Software Engineer", 130000, 33);
 
 INSERT INTO employee (first_name, last_name, manager_id, role_id)
 VALUE ("Tony", "Stark", null, 1);
