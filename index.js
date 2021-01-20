@@ -7,12 +7,12 @@ const connection = mysql.createConnection({
     port: "3306",
     user: "root",
     password: "Ahn@lok123",
-    database: "employeeDB"
+    database: "employee_DB"
 });
 
 connection.connect((err) => {
     if (err) throw err;
-    console.log("Connected!");
+    console.log("Connected to Employee-Tracker!");
     start();
 });
 
@@ -29,8 +29,10 @@ function start() {
                 "View all employees by 'Department'",
                 "Add employee",
                 "Update employee",
+                "Delete employee",
                 "Add role",
-                "Add department"
+                "Add department",
+                "Exit"
                 ],
         },
     ]).then(function(data) {
@@ -55,6 +57,10 @@ function start() {
                 updateEmployee();
             break;
 
+            case "Delete employee":
+                deleteEmployee();
+            break;
+
             case "Add role":
                 addRole();
             break;
@@ -62,16 +68,19 @@ function start() {
             case "Add department":
                 addDepartment();
             break;
+            
+            default: 
+                exit();
         }
-
     })
 }
 
 // Viewing all employees
 function viewEmployee() {
-    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;",
-    function(err, res) {
+    let query = `SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC;`;
+    connection.query(query, function(err, res) {
         if (err) throw err
+        console.log("\n");
         console.table(res)
         start();
     })
@@ -79,6 +88,7 @@ function viewEmployee() {
 
 // Viewing all roles
 function viewRole() {
+    let roleArray = [];
     connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;",
     function(err, res) {
         if (err) throw err
