@@ -32,7 +32,7 @@ function startPrompt() {
               "Add Employee?",
               "Add Role?",
               "Add Department?",
-              "Exit"
+              "Return to Main Menu"
             ]
     }
 ]).then(function(val) {
@@ -64,8 +64,9 @@ function startPrompt() {
                 addDepartment();
               break;
             
-            default:
-                exit();
+            case "Return to Main Menu":
+                startPrompt();
+            break;
     
             }
     })
