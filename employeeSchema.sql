@@ -1,29 +1,65 @@
-drop database if exists employeeDB;
+DROP DATABASE IF EXISTS employeeDB;
 
-create database employeeDB;
+CREATE DATABASE employeeDB;
 
-use employeeDB;
+USE employeeDB;
 
-create table department (
-    id int not null auto_increment primary key,
-    name varchar(30) not null,
+CREATE TABLE department (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY key,
+    name VARCHAR(30 )
 );
 
-create table role (
-    id int not null auto_increment primary key,
-    title varchar(30) not null,
-    salary decimal,
-    department_id int default 0,
+CREATE TABLE role (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(30),
+    salary DECIMAL,
+    department_id INT,
+    FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
-create table employee (
-    id int not null auto_increment primary key,
-    first_name varchar(30) not null,
-    last_name varcahr(30) not null,
-    role_id int default 0,
-    manager_id int null,
+CREATE TABLE employee (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(30),
+    last_name VARCHAR(30),
+    manager_id INT,
+    role_id INT,
+    FOREIGN KEY (role_id) REFERENCES role(id),
+    FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
-insert into department (name) values ("Sales"), ("Engineering"), ("Finance"), ("Legal"), ("Marketing");
+INSERT INTO department (name)
+VALUE ("Sales");
+INSERT INTO department (name)
+VALUE ("Engineering");
+INSERT INTO department (name)
+VALUE ("Finance");
+INSERT INTO department (name)
+VALUE ("Legal");
+INSERT INTO department (name)
+VALUE ("Marketing");
 
-select * from department
+INSERT INTO role (title, salary, department_id)
+VALUE ("Lawyer", 120000, 22);
+INSERT INTO role (title, salary, department_id)
+VALUE ("Sales Associate", 45000, 12);
+INSERT INTO role (title, salary, department_id)
+VALUE ("Senior Marketing Manager", 110000, 2);
+INSERT INTO role (title, salary, department_id)
+VALUE ("Data Analyst", 90000, 66);
+INSERT INTO role (title, salary, department_id)
+VALUE ("Lead Software Engineer, 130000, 33);
+
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Tony", "Stark", null, 1);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("James", "Cameron", 3, 2);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Marc", "Jacobs", 2, 3);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Michael", "Jung", null, 4);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Henry", "Bourbon", null, 5);
+
+SELECT * FROM department;
+SELECT * FROM role;
+SELECT * FROM employee;
