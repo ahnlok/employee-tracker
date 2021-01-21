@@ -1,43 +1,39 @@
-DROP DATABASE IF EXISTS employee_DB;
+DROP DATABASE IF EXISTS employees_db;
+CREATE DATABASE employees_db;
 
-CREATE DATABASE employee_DB;
-
-USE employee_DB;
+USE employees_db;
 
 CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(30)
- 
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  PRIMARY KEY (id)
 );
--- DEPARTMENT TABLE
-CREATE TABLE role (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(30),
-  salary DECIMAL,
-  department_id INT,
-  FOREIGN KEY (department_id) REFERENCES department(id)
-);
--- EMPLOYEE ROLE TABLE 
-CREATE TABLE employee (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  first_name VARCHAR(30),
-  last_name VARCHAR(30),
-  manager_id INT,
-  role_id INT,
-  FOREIGN KEY (role_id) REFERENCES role(id),
-  FOREIGN KEY (manager_id) REFERENCES employee(id)
 
+CREATE TABLE role (
+  id INT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(50) NOT NULL,
+  salary DECIMAL(10,2) NOT NULL,
+  department_id INT, 
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE employee (
+  id INT NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR (50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  role_id INT NOT NULL, 
+  manager_id INT, 
+  PRIMARY KEY (id)
 );
 
 INSERT INTO department (name)
 VALUES ("Sales"), ("Engineering"), ("Human Resources"), ("Legal"), ("Finance"), ("Artist");
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("CEO", "100000", "7"), ("Software Developer", "70000", "2"), ("Lawyer", "60000", "3"), ("Lawyer", "60000", "4"), ("Actuary", "60000", "5"), ("Artist", "70000", "6"), ("Salesperson", "40000", "1");
+VALUES ("Marketing Manager", 100000, 7), ("Software Developer", 70000, 2), ("Lawyer", 60000, 3), ("Software Engineer", 90000, 2), ("Sales Rep", 60000, 5), ("Digital Artist", 70000, 6), ("Junior Data Analyst", 40000, 1);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Marion", "Knight", "1"), ("Bill", "Gates", "2", "1"), ("Rob", "Robson", "3", "1"), ("Ted", "Tenderoni", "4", "3"), ("Cisar", "Sarabius", "5", "1"), ("Tupac", "Shakur", "Artist", "6", "1"), ("Jordan", "Belfort", "1", "1");
-
+VALUES ("Jack", "Sparrow", 9, 1), ("Steve", "Woziniak", 2, 1), ("Ron", "Swanson", 3, 1), ("Luke", "William", 4, 3), ("Julius", "Caesar", 5, 1), ("George", "Lucas", 6, 1), ("Anakin", "Skywalker", 1, 1);
 -- Query for view all --
 SELECT e.id, e.first_name, e.last_name, d.name AS department, r.title, r.salary, CONCAT_WS(" ", m.first_name, m.last_name) AS manager FROM employee e LEFT JOIN employee m ON m.id = e.manager_id INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id ORDER BY e.id ASC;
 

@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
     port: 3306,
     user: "root",
     password: "Ahn@lok123",
-    database: "employee_DB"
+    database: "employees_DB"
 });
 
 // figlet
@@ -28,6 +28,9 @@ connection.connect(function(err) {
     if (err) throw err
     console.log("Connected as Id" + connection.threadId)
     init();
+    viewAllEmployees();
+    viewAllRoles();
+    viewAllDepartments();
 });
 
 // Starting Prompt
@@ -58,17 +61,37 @@ function init() {
   else if (val === "DELETE") {
     deleteEmployee();
   }
-  else if (val === "EXIT") {
-    figlet ('Thank You', (err, res) => {
-      console.log(err || res);
-  });
-  connection.end();
-  }
   else {
     connection.end();
-  }
+    }
   })
 }
+
+// View Choice
+function viewChoice() {
+  inquirer.prompt([
+    {
+    name: "viewSelection",
+    type: "list",
+    message: "What would you like to view?",
+    choices: ["View Employees", "View Roles", "View Departments", "EXIT"]
+    },
+  ]).then(function(answer) {
+    if (answer.viewSelection === "View Employees") {
+      viewAllEmployees();
+    }
+    else if (answer.viewSelection === "View Roles") {
+      viewAllRoles();
+    }
+    else if (answer.viewSelection === "View Department") {
+      viewAllDepartments();
+    }
+    else {
+      connection.end();
+    }
+  })
+}
+
 //View Employee
 function viewAllEmployees() {
     connection.query("SELECT id, CONCAT_WS(' ', first_name, last_name) AS managers FROM employee", 
