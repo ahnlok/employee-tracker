@@ -29,48 +29,27 @@ CREATE TABLE employee (
 
 );
 
--- DEPARTMENT SEEDS -----
 INSERT INTO department (name)
-VALUE ("Sales");
-INSERT INTO department (name)
-VALUE ("Engineering");
-INSERT INTO department (name)
-VALUE ("Finance");
-INSERT INTO department (name)
-VALUE ("Legal");
+VALUES ("Sales"), ("Engineering"), ("Human Resources"), ("Legal"), ("Finance"), ("Artist");
 
--- EMPLOYEE ROLE SEEDS -------
 INSERT INTO role (title, salary, department_id)
-VALUE ("Lead Engineer", 150000, 2);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Legal Team Lead", 250000, 4);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Marketing Director", 125000, 3);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Sales Lead", 100000, 1);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Salesperson", 80000, 1);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Software Engineer", 120000, 2);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Lawyer", 190000, 4);
+VALUES ("CEO", "100000", "7"), ("Software Developer", "70000", "2"), ("Lawyer", "60000", "3"), ("Lawyer", "60000", "4"), ("Actuary", "60000", "5"), ("Artist", "70000", "6"), ("Salesperson", "40000", "1");
 
--- EMPLOYEE SEEDS -------
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Ron", "Swanson", null, 1);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Indiana", "Jones", null, 2);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Jon","Snow",null,3);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Jake", "Skywalker", 1, 4);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Ben", "Swolo", 4, 5);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Anakin", "Skywalker", 1, 6);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Marion", "Knight", "1"), ("Bill", "Gates", "2", "1"), ("Rob", "Robson", "3", "1"), ("Ted", "Tenderoni", "4", "3"), ("Cisar", "Sarabius", "5", "1"), ("Tupac", "Shakur", "Artist", "6", "1"), ("Jordan", "Belfort", "1", "1");
 
+-- Query for view all --
+SELECT e.id, e.first_name, e.last_name, d.name AS department, r.title, r.salary, CONCAT_WS(" ", m.first_name, m.last_name) AS manager FROM employee e LEFT JOIN employee m ON m.id = e.manager_id INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id ORDER BY e.id ASC;
 
+-- Query for view all roles --
+SELECT  r.id, r.title, r.salary, d.name as Department_Name FROM role AS r INNER JOIN department AS d ON r.department_id = d.id;
 
-SELECT * FROM department;
-SELECT * FROM role;
-SELECT * FROM employee;
+--Query for getting employees --
+SELECT id, CONCAT_WS(' ', first_name, last_name) AS Employee_Name FROM employee
+
+-- Query for updating --
+UPDATE employee SET role_id = 3 WHERE id = 8;
+UPDATE employee SET ? WHERE ?;
+
+-- Query for Delete --
+DELETE FROM department WHERE id = 13;
