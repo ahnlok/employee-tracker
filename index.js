@@ -2,6 +2,7 @@
 const inquirer = require("inquirer")
 const mysql = require("mysql")
 const cTable = require('console.table');
+const figlet = require("figlet");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -9,8 +10,11 @@ const connection = mysql.createConnection({
     user: "root",
     password: "Ahn@lok123",
     database: "employee_DB"
-  });
-
+});
+// figlet
+figlet('Welcome To Employee Tracker', (err, res) => {
+  console.log(err || res);
+});
 
 //Connection ID
 connection.connect(function(err) {
