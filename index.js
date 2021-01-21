@@ -7,19 +7,20 @@ const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "password",
-    database: "employee_trackerDB"
+    password: "Ahn@lok123",
+    database: "employee_DB"
   });
 
 
-//========== Connection ID ==========================//
+//Connection ID
 connection.connect(function(err) {
     if (err) throw err
     console.log("Connected as Id" + connection.threadId)
-    startPrompt();
+    init();
 });
-//================== Initial Prompt =======================//
-function startPrompt() {
+
+// Starting Prompt
+function init() {
     inquirer.prompt([
     {
     type: "list",
@@ -67,35 +68,35 @@ function startPrompt() {
             }
     })
 }
-//============= View All Employees ==========================//
+//View Employee
 function viewAllEmployees() {
     connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;", 
     function(err, res) {
       if (err) throw err
       console.table(res)
-      startPrompt()
+      init()
   })
 }
-//============= View All Roles ==========================//
+// View Roles
 function viewAllRoles() {
   connection.query("SELECT employee.first_name, employee.last_name, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;", 
   function(err, res) {
   if (err) throw err
   console.table(res)
-  startPrompt()
+  init()
   })
 }
-//============= View All Employees By Departments ==========================//
+// View Department
 function viewAllDepartments() {
   connection.query("SELECT employee.first_name, employee.last_name, department.name AS Department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id;", 
   function(err, res) {
     if (err) throw err
     console.table(res)
-    startPrompt()
+    init()
   })
 }
 
-//================= Select Role Quieries Role Title for Add Employee Prompt ===========//
+// Select Role Prompt
 var roleArr = [];
 function selectRole() {
   connection.query("SELECT * FROM role", function(err, res) {
@@ -107,7 +108,7 @@ function selectRole() {
   })
   return roleArr;
 }
-//================= Select Role Quieries The Managers for Add Employee Prompt ===========//
+// The Manager Prompt
 var managersArr = [];
 function selectManager() {
   connection.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL", function(err, res) {
@@ -119,7 +120,7 @@ function selectManager() {
   })
   return managersArr;
 }
-//============= Add Employee ==========================//
+// Adding Employee
 function addEmployee() { 
     inquirer.prompt([
         {
@@ -157,12 +158,13 @@ function addEmployee() {
       }, function(err){
           if (err) throw err
           console.table(val)
-          startPrompt()
+          init()
       })
 
   })
 }
-//============= Update Employee ==========================//
+
+// Update Employee
   function updateEmployee() {
     connection.query("SELECT employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id;", function(err, res) {
     // console.log(res)
@@ -201,7 +203,7 @@ function addEmployee() {
         function(err){
             if (err) throw err
             console.table(val)
-            startPrompt()
+            init()
         })
   
     });
@@ -233,7 +235,7 @@ function addRole() {
             function(err) {
                 if (err) throw err
                 console.table(res);
-                startPrompt();
+                init();
             }
         )
 
@@ -259,7 +261,7 @@ function addDepartment() {
             function(err) {
                 if (err) throw err
                 console.table(res);
-                startPrompt();
+                init();
             }
         )
     })
