@@ -39,10 +39,9 @@ function init() {
               "ADD ROLE",
               "ADD DEPARTMENT",
               "UPDATE",
-              "DELETE",
               "EXIT"
-            ]
-    }
+            ],
+    },
 ]).then(function(val) {
   switch (val.choice) {
     case "VIEW ALL EMPLOYEES":
@@ -84,7 +83,6 @@ function init() {
 function viewAllEmployees() {
     connection.query("SELECT * FROM employee", function (err, res) {
     if (err) throw err;
-      // employees = res;
     console.table(res)
     init()
   })
@@ -94,8 +92,7 @@ function viewAllEmployees() {
 function viewAllRoles() {
   connection.query("SELECT * FROM role", 
   function (err, res) {
-  // roles = res;
-  if (err) throw err
+  if (err) throw err;
   console.table(res)
   init()
   })
@@ -105,13 +102,47 @@ function viewAllRoles() {
 function viewAllDepartments() {
   connection.query("SELECT * FROM department", 
   function(err, res) {
-    if (err) throw err
+    if (err) throw err;
     console.table(res)
     init()
   })
 }
 
-
+// Add Employee
+function addEmployee() {
+  inquirer.prompt ([
+    {
+      type: "input",
+      name: "firstName",
+      message: "What is the 'First Name' of the employee?"
+    },
+    {
+      type: "input",
+      name: "lastName",
+      message: "What is the 'Last Name' of the employee?"
+    },
+    {
+      type: "number",
+      name: "roleId",
+      message: "What is the 'Role ID' of the employee?"
+    },
+    {
+      type: "number",
+      name: "managerId",
+      message: "What is the 'Manager ID' of the employee?"
+    },
+  ]).then(function(answer) {
+    connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answer.firstName}', '${answer.lastName}', '${answer.roleId}', '${answer.managerId}')`,
+    // [res.firstName, res.lastName, res.roleId, res.managerId], 
+    function(err, res) {
+      if (err) throw err;
+      console.log("New Employee Information Added Successfully!" + "\n")
+      console.log(answer.firstName + " " + answer.lastName + "\n");
+      viewAllEmployees();
+      
+    });
+  });
+}
   
 
 
