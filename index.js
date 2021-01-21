@@ -90,7 +90,7 @@ function viewAllEmployees() {
 
 // View Roles
 function viewAllRoles() {
-  connection.query("SELECT * FROM role", 
+  connection.query("SELECT * FROM roles", 
   function (err, res) {
   if (err) throw err;
   console.table(res)
@@ -133,16 +133,40 @@ function addEmployee() {
     },
   ]).then(function(answer) {
     connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answer.firstName}', '${answer.lastName}', '${answer.roleId}', '${answer.managerId}')`,
-    // [res.firstName, res.lastName, res.roleId, res.managerId], 
     function(err, res) {
       if (err) throw err;
       console.log("New Employee Information Added Successfully!" + "\n")
       console.log(answer.firstName + " " + answer.lastName + "\n");
       viewAllEmployees();
-      
     });
   });
 }
   
-
-
+// Add Roles
+function addRole(){
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "roleTitle",
+      message: "What is the 'Title' of this 'Role'?"
+    },
+    {
+      type: "number",
+      name: "salaryAmount",
+      message: "Please enter the amount of 'Salary' for this role?"
+    },
+    {
+      type: "number",
+      name: "departmentId",
+      message: "Please enter the 'Department ID'?"
+    },
+  ]).then(function(answer) {
+    connection.query(`INSERT INTO roles (title, salary, department_id) VALUES ('${answer.roleTitle}', '${answer.salaryAmount}', '${answer.departmentId}')`,
+    function (err, res) {
+      if (err) throw err;
+      console.log("A New Role Has Been Successfully Added!" + "\n");
+      console.log(answer.roleTitle + " " + answer.salaryAmount + " " + answer.departmentId + "\n");
+      viewAllRoles();
+    });
+  });
+};
