@@ -38,7 +38,8 @@ function init() {
               "ADD EMPLOYEE",
               "ADD ROLE",
               "ADD DEPARTMENT",
-              "UPDATE",
+              "UPDATE EMPLOYEE ID",
+              "DELETE EMPLOYEE",
               "EXIT"
             ],
     },
@@ -68,8 +69,12 @@ function init() {
       addDepartment();
       break;
 
-    case "UPDATE":
+    case "UPDATE EMPLOYEE ID":
       updateEmployee();
+      break;
+
+    case "DELETE EMPLOYEE":
+      deleteEmployee();
       break;
 
     default:
@@ -83,8 +88,8 @@ function init() {
 function viewAllEmployees() {
     connection.query("SELECT * FROM employee", function (err, res) {
     if (err) throw err;
-    console.table(res)
-    init()
+    console.table(res);
+    init();
   })
 }
 
@@ -93,8 +98,8 @@ function viewAllRoles() {
   connection.query("SELECT * FROM roles", 
   function (err, res) {
   if (err) throw err;
-  console.table(res)
-  init()
+  console.table(res);
+  init();
   })
 }
 
@@ -103,8 +108,8 @@ function viewAllDepartments() {
   connection.query("SELECT * FROM department", 
   function(err, res) {
     if (err) throw err;
-    console.table(res)
-    init()
+    console.table(res);
+    init();
   })
 }
 
@@ -189,3 +194,44 @@ function addDepartment() {
     });
   });
 }
+
+// Update
+function updateEmployee() {
+  inquirer.prompt([
+  {
+    type: "input",
+    name: "employeeName",
+    message: "Enter the 'First Name' of the employee you would like to update:"
+  },
+  {
+    type: "input",
+    name: "roleId",
+    message: "Enter the 'Role ID' of the employee you would like to update:"
+  },
+  ]).then(function(answer) {
+    connection.query(`UPDATE employee SET role_id = '${answer.roleId}' WHERE first_name = '${answer.employeeName}'`,
+    function (err, res) {
+    if (err) throw err;
+    console.log("Successfully Updated Employee's Information" + "\n");
+    });
+  viewAllEmployees();
+  });
+};
+
+// Delete Employee Function
+function deleteEmployee() { 
+  inquirer.prompt([
+    {
+      name: "employeeDelete",
+      type: "input",
+      message: "Enter the employee's 'First Name' you would like to remove:"
+    },
+  ]).then(function(answer) {
+    connection.query(`DELETE FROM employee WHERE first_name = '${answer.employeeDelete}';`,
+    function(err, res){
+      if (err) throw err;
+      console.log ("The employee has been successfully deleted" + "\n");
+    });
+    viewAllEmployees();
+  });
+};
