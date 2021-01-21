@@ -170,3 +170,22 @@ function addRole(){
     });
   });
 };
+
+// Add Department
+function addDepartment() {
+  inquirer.prompt ([
+    {
+      type: "input",
+      name: "add_department",
+      message: "What 'Department' would you like to add?"
+    },
+  ]).then (function(answer) {
+    connection.query(`INSERT INTO department (name) VALUES ('${answer.add_department}')`,
+    function(err, res) {
+      if (err) throw err;
+      console.log("A New Department Has Been Successfully Added!" + "\n");
+      console.log(answer.add_department + "\n");
+      viewAllDepartments();
+    });
+  });
+}
